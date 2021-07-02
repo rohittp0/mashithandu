@@ -4,11 +4,7 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  push:
-    branches:
-      - "*"
   pull_request:
-    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,7 +12,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  test:
+  test-content:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -30,3 +26,15 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run test Script
         run: sh test.sh
+          
+  test-commits:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: PR Commits Count
+        id: commit_count
+        uses: sultansoy/pr-commits-count@v1.0
+   
+      - if: ${{ steps.commit_count.outputs != 1 }}
+        run: echo "Number of commits not equal to 1" && exit 1
+
