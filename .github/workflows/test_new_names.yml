@@ -37,8 +37,12 @@ jobs:
           
       - name: PR Commits Count
         id: commit_count
-        uses: sultansoy/pr-commits-count@v1.0
+        run: |
+          echo "::set-output name=count::$(git log --oneline $SCOURCE \^$TARGET | wc -l)"
+        env: |
+          SCOURCE: ${{ github.head_ref }}
+          TARGET: ${{ github.base_ref }}
    
-      - if: ${{ steps.commit_count.outputs != 1 }}
+      - if: ${{ steps.commit_count.outputs.count != 1 }}
         run: echo "Number of commits not equal to 1" && exit 1
 
